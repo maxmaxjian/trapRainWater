@@ -4,7 +4,7 @@
 #include <iterator>
 
 class solution {
-public:
+  public:
     int trap(const std::vector<int> & heights) {
 	auto temp = std::minmax_element(heights.begin(), heights.end());
 	int minhgt = *temp.first, maxhgt = *temp.second;
@@ -21,12 +21,33 @@ public:
 	    std::cout << std::endl;
 	}
 
-	return 0;
+        std::vector<int> waters;
+        std::transform(cuts.begin(), cuts.end(),
+                       std::inserter(waters, waters.begin()),[&](const std::vector<int> & cross){
+                           // std::cout << trappedWater(cross) << std::endl;
+                           return trappedWater(cross);
+                       });
+
+        return std::accumulate(waters.begin(), waters.end(), 0);
     }
 
-private:
+  private:
     int trappedWater(const std::vector<int> & cross) {
-	
+        std::vector<size_t> idxOfOne;
+        for (size_t i = 0; i < cross.size(); i++)
+            if (cross[i] == 1)
+                idxOfOne.push_back(i);
+        // std::copy(idxOfOne.begin(), idxOfOne.end(), std::ostream_iterator<size_t>(std::cout, " "));
+        // std::cout << std::endl;
+
+        std::vector<int> diff;
+        std::transform(idxOfOne.begin(), idxOfOne.end()-1, idxOfOne.begin()+1,
+                       std::inserter(diff, diff.begin()), [](int first, int second){
+                           return second-first-1;
+                       });
+        // std::copy(diff.begin(), diff.end(), std::ostream_iterator<int>(std::cout, " "));
+        // std::cout << std::endl;
+        return std::accumulate(diff.begin(), diff.end(), 0);
     }
 };
 
